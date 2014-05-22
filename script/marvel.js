@@ -49,6 +49,14 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		});
 	}
 
+	// Iniciar el objeto ya contruido
+	this.initCreated = function(){
+		this.actualPage = 1;
+		this.ajaxIsBusy = false;
+		this.lastPageReturned = (new Date()).getTime();
+		this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
+	}
+
 	// Al cargar la información inicial
 	this.onGetInitialData = function(APIData){
 		this.storeResults(APIData);
@@ -68,7 +76,6 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 	// Al cargar información (de paginación)
 	this.onGetData = function(APIData){
 		this.storeResults(APIData);
-		this.nextPage();
 	}
 
 	// Selecciona la página de resultados
@@ -77,7 +84,7 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		var nextOffset = targetsPerPage * (this.actualPage + 1);
 
 		if(actualOffset < this.totalTargets){
-			if(actualOffset <= this.results.length){
+			if(actualOffset < this.results.length){
 				if((this.lastPageReturned  + timeFromLastReturn) > (new Date()).getTime()){
 					return false;
 				}
@@ -186,6 +193,13 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 			newResults.push(newresult);
 		}
 		return newResults;
+	}
+
+	this.getCode = function(){
+		return this.genCode(this.sType, this.search);
+	}
+	this.genCode = function(sType, search){
+		return sType + ':' + search;
 	}
 
 	this.init();
