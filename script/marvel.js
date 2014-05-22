@@ -4,7 +4,7 @@
  */
 
 
-function MarvelAPI(key, sType, search, onLoading){
+function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 	var targetsPerPage = 12; // Tarjetas por página
 	var timeFromLastReturn = 300; // Tiempo pasado desde la última devolución
 
@@ -15,6 +15,8 @@ function MarvelAPI(key, sType, search, onLoading){
 	this.sType = sType;
 	this.search = search;
 	this.onLoading = onLoading;
+	this.onInit = onInit;
+	this.onNext = onNext;
 	this.lastTimeout;
 
 	this.results = [];
@@ -25,7 +27,7 @@ function MarvelAPI(key, sType, search, onLoading){
 		char: "http://gateway.marvel.com:80/v1/public/characters?nameStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
 		comic: "http://gateway.marvel.com:80/v1/public/comics?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
 		serie: "http://gateway.marvel.com:80/v1/public/series?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}"
-	}
+	};
 
 	// Al construir el objeto
 	this.init = function(){
@@ -40,7 +42,7 @@ function MarvelAPI(key, sType, search, onLoading){
 		this.storeResults(APIData);
 		this.totalTargets = APIData.total;
 		this.lastPageReturned = (new Date()).getTime();
-		templateSystem.initial(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
+		this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
 	}
 
 	// Paginación
@@ -69,20 +71,13 @@ function MarvelAPI(key, sType, search, onLoading){
 					return false;
 				}
 
-				//console.log(this.actualPage, targetsPerPage, actualOffset)
-				templateSystem.addElements(this.getResult(targetsPerPage, actualOffset));
+				this.onNext(this.getResult(targetsPerPage, actualOffset));
 				this.actualPage++;
-
-				if(!!this.lastTimeout) clearTimeout(this.lastTimeout);
 
 				if(	nextOffset >= this.results.length &&
 					nextOffset < this.totalTargets &&
 					!this.ajaxIsBusy)
 						this.getData(targetsPerPage * 2, nextOffset)
-			}else if(this.ajaxIsBusy){
-				if(!!this.lastTimeout) clearTimeout(this.lastTimeout);
-				var objThis = this;
-				this.lastTimeout = setTimeout(function(){objThis.nextPage()}, 100);
 			}
 		}
 	}

@@ -11,7 +11,7 @@ var _get = {
 	scroll: function(){ return document.documentElement.scrollTop || document.body.scrollTop;},
 	windowHeight: function(){ return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;},
 	windowWidth: function(){ return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;}
-}
+};
 
 
 var INFO_MAX_HEIGHT = 220;
@@ -42,9 +42,16 @@ function search(){
 	var onLoading = function(status){
 		_cangueClass(_('load-bar'), 'loading', !status);
 	}
+	var onInit = function(type, APIResults, total){
+		templateSystem.initial(type, APIResults, total);
+	}
+	var onNext = function(APIResults){
+		templateSystem.addElements(APIResults);
+	}
+
 	_q('#load-bar .loaded').style.width = '0%';
 	if(sSearch != ''){
-		MARVEL = new MarvelAPI(MARVEL_KEY, sType, sSearch, onLoading);
+		MARVEL = new MarvelAPI(MARVEL_KEY, sType, sSearch, onInit, onNext, onLoading);
 		document.location.href = '#' + sType + ':' + sSearch;
 	}
 }
@@ -96,7 +103,7 @@ function showOptionObj(){
 	}
 	this.hide = function(){
 		if(this.isHidden == 2)
-			_cangueClass(_('search-opt').parentElement, 'show-options', true)
+			_cangueClass(_('search-opt').parentElement, 'show-options', true);
 		else if(this.isHidden == 1) this.isHidden = 2;
 	}
 }
@@ -300,7 +307,7 @@ var templateSystem = new templateSystemObj();
 
 // Saber si está focus o no el search
 function searchFocus(focus){
-	_cangueClass(document.body, 'searching', !focus)
+	_cangueClass(document.body, 'searching', !focus);
 	if(!focus) _('search').blur();
 }
 
@@ -319,19 +326,19 @@ _addEvent('scroll', function(e){
 });
 
 // Resize
-_addEvent('resize', function(e){
+_addEvent('resize', function(){
 	crossScroll.setSizeToScroll();
 	window.scrollTo(0, _get.scroll() - 1);
 	window.scrollTo(0, _get.scroll() + 1);
 });
 
 // Click
-_addEvent('click', function(e){
+_addEvent('click', function(){
 	showOption.hide();
 });
 
 // Keyup
-_addEvent('keyup', function(e){
+_addEvent('keyup', function(){
 	showOption.hide();
 });
 
