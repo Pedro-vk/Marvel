@@ -289,13 +289,11 @@ function templateSystemObj(){
 			var info = elements[elem].querySelector('.info');
 			var desc = elements[elem].querySelector('.description');
 
-			//info.textContent = info.textContent.replace(/\<(|\/)[^>]{0,20}>/g, '');
-
-			if(desc.textContent.length > 500){
-				desc.textContent = desc.textContent.substr(0,500);
+			if(desc.textContent.length > 400){
+				desc.textContent = desc.textContent.substr(0, 400);
 			}
 			while(info.offsetHeight > INFO_MAX_HEIGHT){
-				var step = (info.offsetHeight-INFO_MAX_HEIGHT) > 80 ? 100 : 4;
+				var step = (info.offsetHeight-INFO_MAX_HEIGHT) > 34 ? 30 : 6;
 				desc.textContent = desc.textContent.substr(0, desc.textContent.length - step) + '...';
 			}
 		}

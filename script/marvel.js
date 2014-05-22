@@ -3,8 +3,6 @@
  *	Pedro Gutiérrez
  */
 
-function _addEvent(event,func,o){o=o?o:window; return (!Boolean(window.addEventListener)?o.attachEvent('on'+event,func):o.addEventListener(event,func,false));}
-
 
 function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 	var targetsPerPage = 12; // Tarjetas por página
