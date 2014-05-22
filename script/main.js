@@ -23,7 +23,9 @@ var CONTENT_SHOW_DELAY = 200;
 
 var MARVEL_KEY = "f526f137d0d0411937e54a018676190d";
 
-var MARVEL;
+var MARVEL = null;
+
+var MARVEL_BUFFER = [];
 
 
 
@@ -49,10 +51,17 @@ function search(){
 		templateSystem.addElements(APIResults);
 	}
 
-	_q('#load-bar .loaded').style.width = '0%';
-	if(sSearch != ''){
-		MARVEL = new MarvelAPI(MARVEL_KEY, sType, sSearch, onInit, onNext, onLoading);
+	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sType, sSearch) != MARVEL.getCode(sType, sSearch) : true)){
+		_q('#load-bar .loaded').style.width = '0%';
 		document.location.href = '#' + sType + ':' + sSearch;
+
+		if(!!MARVEL) MARVEL_BUFFER[MARVEL.getCode()] = MARVEL;
+
+		if(MARVEL && MARVEL_BUFFER[MARVEL.genCode(sType, sSearch)]){
+			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sType, sSearch)];
+			MARVEL.initCreated();
+		}else
+			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sSearch, onInit, onNext, onLoading);
 	}
 }
 
@@ -69,7 +78,7 @@ function searchOnLoad(){
 	
 	_('search-opt').value = sType;
 	_('search-type-' + sType).checked = true;
-	changueOption(_('search-type-' + sType));
+	changueOption(_('search-type-' + sType), true);
 	_('search').value = sSearch;
 	isWrote(_('search'));
 
@@ -91,7 +100,7 @@ function clearSearch(id){
 // Mostrar y ocultar opciones
 function showOptionObj(){
 	this.canShow = true;
-	this.isHidden = true;
+	this.isHidden = 0;
 	this.changue = function(o){
 		if(this.canShow){
 			_switchClass(o, 'show-options');
@@ -110,7 +119,7 @@ function showOptionObj(){
 var showOption = new showOptionObj();
 
 // Cambiar de opción
-function changueOption(o){
+function changueOption(o, fromSearch){
 	var newValue = o.value;
 	var title = o.parentElement.querySelector('span').innerHTML;
 
@@ -119,7 +128,7 @@ function changueOption(o){
 
 	o.querySelector('input[type=hidden]').value = newValue;
 	o.querySelector('span').innerHTML = title;
-	showOption.canShow = false;
+	if(!fromSearch) showOption.canShow = false;
 }
 
 
