@@ -27,7 +27,7 @@ header .search-box .search-send{width:100px;line-height:48px;position:absolute;t
 #load-bar .loaded{height:6px;width:0;background:#09f;-webkit-transition:all .4s ease 0;-moz-transition:all .4s ease;-moz-transition:all .4s ease 0;transition:all .4s ease;transition:all .4s ease 0}
 @-webkit-keyframes progress{0%{left:-20px} 100%{left:0}}@-moz-keyframes progress{0%{left:-20px} 100%{left:0}}@keyframes progress{0%{left:-20px} 100%{left:0}}footer{position:fixed;bottom:0;left:0;right:0;width:100%;padding:14px 0;background:#fff;color:#777;font-size:12px;text-shadow:0 1px 0 #ececec;z-index:9000;border-top:1px solid #d0d0d0}footer a{display:inline-block;padding:0 20px;text-decoration:none;color:inherit;font-weight:300;-webkit-transition:all .3s ease 0;-moz-transition:all .3s ease;-moz-transition:all .3s ease 0;transition:all .3s ease;transition:all .3s ease 0}footer a:hover{color:#09f}
 footer .provider{float:right}
-#content{position:fixed;top:0;bottom:0;left:0;padding:20px;padding-top:130px;padding-bottom:40px;text-align:left;margin:auto}#content .align{display:inline-block;vertical-align:middle}
+#content{position:fixed;top:0;bottom:0;left:0;padding:20px;padding-top:130px;padding-bottom:40px;text-align:left;margin:auto;background:#ddd}#content .align{display:inline-block;vertical-align:middle}
 #content.line0 .align{height:100%}
 #content.line1 .align{height:100%}
 #content.line2 .align{height:50%}
