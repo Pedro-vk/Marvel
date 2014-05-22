@@ -3,6 +3,8 @@
  *	Pedro Gutiérrez
  */
 
+function _addEvent(event,func,o){o=o?o:window; return (!Boolean(window.addEventListener)?o.attachEvent('on'+event,func):o.addEventListener(event,func,false));}
+
 
 function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 	var targetsPerPage = 12; // Tarjetas por página
@@ -28,6 +30,18 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		comic: "http://gateway.marvel.com:80/v1/public/comics?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
 		serie: "http://gateway.marvel.com:80/v1/public/series?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}"
 	};
+	var filters = [
+		["name"],
+		["title"],
+		["thumbnail"],
+		["description"],
+		["comics", "available"],
+		["series", "available"],
+		["pageCount"],
+		["prices"],
+		["endYear"],
+		["startYear"]
+	];
 
 	// Al construir el objeto
 	this.init = function(){
@@ -55,7 +69,6 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 
 	// Al cargar información (de paginación)
 	this.onGetData = function(APIData){
-		this.lastPageReturned = (new Date()).getTime();
 		this.storeResults(APIData);
 		this.nextPage();
 	}
@@ -70,24 +83,31 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 				if((this.lastPageReturned  + timeFromLastReturn) > (new Date()).getTime()){
 					return false;
 				}
-
-				this.onNext(this.getResult(targetsPerPage, actualOffset));
-				this.actualPage++;
-
 				if(	nextOffset >= this.results.length &&
 					nextOffset < this.totalTargets &&
 					!this.ajaxIsBusy)
 						this.getData(targetsPerPage * 2, nextOffset)
+
+				this.onNext(this.getResult(targetsPerPage, actualOffset));
+				this.actualPage++;
+				this.lastPageReturned = (new Date()).getTime();
+
+			}else if(this.ajaxIsBusy){
+				if(!!this.lastTimeout) clearTimeout(this.lastTimeout);
+				var objThis = this;
+				this.lastTimeout = setTimeout(function(){objThis.nextPage()}, 100);
 			}
+
 		}
 	}
 
 	// Almacena los resultados
 	this.storeResults = function(APIData){
-		var results = APIData.results;
+		var results = filterResults(APIData.results, filters);
 		for(var n in results){
 			if(isNaN(n)) continue;
 
+			results[n].index = this.results.length;
 			this.results.push(results[n]);
 		}
 	}
@@ -140,6 +160,34 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		url = url.replace('{{offset}}', offset);
 		url = url.replace('{{key}}', this.key);
 		return encodeURI(url);
+	}
+
+	var filterResults = function(APIResults, filters){
+		var newResults = [];
+
+		for(var n in APIResults){
+			if(isNaN(n)) continue;
+
+			var newresult = {}
+
+			for(var filter in filters){
+				if(isNaN(filter)) continue;
+
+				var actual = filters[filter];
+				
+				if(!APIResults[n][actual[0]] && isNaN(APIResults[n][actual[0]])) continue;
+			
+				if(actual.length == 1)
+					newresult[actual[0]] = APIResults[n][actual[0]];
+
+				if(actual.length == 2){
+					newresult[actual[0]] = {};
+					newresult[actual[0]][actual[1]] = APIResults[n][actual[0]][actual[1]];
+				}
+			}
+			newResults.push(newresult);
+		}
+		return newResults;
 	}
 
 	this.init();
