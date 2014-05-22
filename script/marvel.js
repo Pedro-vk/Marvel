@@ -94,10 +94,7 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 
 	// Devuelve un rango de resultados
 	this.getResult = function(limit, offset){
-		var resp = [];
-		for(var i=offset; i<(limit+offset) && i<this.results.length; i++)
-			resp.push(this.results[i])
-		return resp;
+		return this.results.slice(offset, offset + limit);
 	}
 
 	this.AJAX = function(URL, onReady, onError){
