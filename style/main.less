@@ -10,9 +10,11 @@
 
 // Colores
 
-@marvel-red:	#f0141e;
-@marvel-red:	#f66;
-@marvel-red:	#09F;	// No es rojo...
+@marvel:	#f0141e;
+@marvel:	#f66;
+@marvel:	#09F;	// No es rojo...
+
+@marvel-red: #f66;
 
 // Color - fondo
 
@@ -24,7 +26,7 @@
 // Color - letra
 
 @cf-front:		#777;	// Cuadros principalres
-@cf-front-h:	@marvel-red;
+@cf-front-h:	@marvel;
 @cf-search:		#585858;
 
 @cf-tar-desc:	#888;
@@ -197,7 +199,7 @@ header{
 				border-color: lighten(@cb-search, 6%)
 			}
 			&:focus{
-				border-color: @marvel-red;
+				border-color: @marvel;
 			}
 
 		}
@@ -230,7 +232,7 @@ header{
 			top: 0;
 			width: @hd-select;
 			padding: 10px @hd-select-pad;
-			background: @marvel-red;
+			background: @marvel;
 			color: #fff;
 			line-height: 30px;
 			cursor: pointer;
@@ -240,7 +242,7 @@ header{
 
 			&:hover,
 			&:focus{
-				background: darken(@marvel-red, 6%);
+				background: darken(@marvel, 6%);
 			}
 
 			.fa{
@@ -291,10 +293,16 @@ header{
 	right: 0;
 	background: #bbb;
 
+	#STYLE>.transition(0.4s);
+
 	&.loading{
 		.progress{
 			#STYLE>.opacity(1);
 		}
+	}
+
+	&.error{
+		background: @marvel-red;
 	}
 
 	.progress{
@@ -313,7 +321,7 @@ header{
 	.loaded{
 		height: @lb-height;
 		width: 0%;
-		background: @marvel-red;
+		background: @marvel;
 
 		#STYLE>.transition(0.4s);
 	}
@@ -426,8 +434,8 @@ article{
 	width: @ta-width;
 	background: #fff;
 	border: 1px solid @cb-target;
-	border-left-color: @marvel-red;
-	border-top-color: @marvel-red;
+	border-left-color: @marvel;
+	border-top-color: @marvel;
 	color: #333;
 	margin: 0px @ta-lateral 40px;
 	//box-shadow: 0px 0px 20px @cs-target;
@@ -464,7 +472,7 @@ article{
 		height: @size;
 		background: @cbg-bg;
 		border: @border solid transparent;
-		border-bottom-color: @marvel-red;
+		border-bottom-color: @marvel;
 		border-width: 1px 0px;
 		padding: 0px 1px;
 		//box-shadow: inset 0px -20px 20px -20px @cs-target;
@@ -510,7 +518,7 @@ article{
 			@size: 4px;
 
 			cursor: pointer;
-			box-shadow: inset (@size * 2 * @dir) 0px 0px -@size @marvel-red;
+			box-shadow: inset (@size * 2 * @dir) 0px 0px -@size @marvel;
 			
 			&, .fa{
 				#STYLE>.transition(0.4s);
@@ -518,8 +526,8 @@ article{
 
 			&:hover{
 				color: #fff;
-				//background: @marvel-red;
-				box-shadow: inset ((@ta-width + @size) * @dir) 0px 0px -@size @marvel-red;
+				//background: @marvel;
+				box-shadow: inset ((@ta-width + @size) * @dir) 0px 0px -@size @marvel;
 
 				.fa{
 					color: #fff;
