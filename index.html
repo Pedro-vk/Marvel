@@ -36,8 +36,9 @@
 					<div class="name">{{name}}</div>
 					<div class="description">{{description}}</div>
 				</div>
-				<div class="details"><i class="fa fa-book"></i>Cómics<span>{{comics}}</span></div>
-				<div class="details"><i class="fa fa-film"></i>Series<span>{{series}}</span></div>
+				<div class="details detail-{{haveseries}}" onclick="if({{haveseries}}) search('serie','{{id}}','char_serie');"><i class="fa fa-film"></i>Series<span>{{series}}</span></div>
+				<div class="details detail-{{havecomics}}" onclick="if({{havecomics}}) search('comic','{{id}}','char_comic');"><i class="fa fa-book"></i>Cómics<span>{{comics}}</span></div>
+				<div class="details detail-{{haveseries}}" onclick="if({{havestories}}) search('story','{{id}}','char_story');"><i class="fa fa-file-text-o"></i>Historias<span>{{stories}}</span></div>
 			</article>
 		</script>
 		<script id="template-comic" type="text/html">
@@ -47,6 +48,7 @@
 					<div class="name">{{title}}</div>
 					<div class="description">{{description}}</div>
 				</div>
+				<div class="details detail-{{havechars}}" onclick="if({{havechars}}) search('char','{{id}}','comic_char');"><i class="fa fa-users"></i>Personajes<span>{{chars}}</span></div>
 				<div class="details"><i class="fa fa-copy"></i>Páginas<span>{{pages}}</span></div>
 				<div class="details"><i class="fa fa-money"></i>Precio<span>{{price}}$</span></div>
 			</article>
@@ -58,8 +60,21 @@
 					<div class="name">{{title}}</div>
 					<div class="description">{{description}}</div>
 				</div>
-				<div class="details"><i class="fa fa-book"></i>Cómics<span>{{comics}}</span></div>
+				<div class="details detail-{{havecomics}}" onclick="if({{havecomics}}) search('comic','{{id}}','serie_comic');"><i class="fa fa-book"></i>Cómics<span>{{comics}}</span></div>
+				<div class="details detail-{{havechars}}" onclick="if({{havechars}}) search('char','{{id}}','serie_char');"><i class="fa fa-users"></i>Personajes<span>{{chars}}</span></div>
 				<div class="details"><i class="fa fa-calendar"></i>Duración<span>{{years}}</span></div>
+			</article>
+		</script>
+		<script id="template-story" type="text/html">
+			<article class="hidden trim" style="z-index:{{index}}">
+				<div class="thumbnail" style="background:url('{{thumbnail}}');"></div>
+				<div class="info">
+					<div class="name">{{title}}</div>
+					<div class="description">{{description}}</div>
+				</div>
+				<div class="details detail-{{havecomics}}" onclick="if({{havecomics}}) search('comic','{{id}}','story_comic');"><i class="fa fa-book"></i>Cómics<span>{{comics}}</span></div>
+				<div class="details detail-{{havechars}}" onclick="if({{havechars}}) search('char','{{id}}','story_char');"><i class="fa fa-users"></i>Personajes<span>{{chars}}</span></div>
+				<div class="details"><i class="fa fa-pencil"></i>Creadores<span>{{crea}}</span></div>
 			</article>
 		</script>
 	</head>
