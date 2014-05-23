@@ -37,9 +37,10 @@ function searchOnEnter(e){
 		search();
 	}
 }
-function search(){
-	var sType = _('search-opt').value;
-	var sSearch = _('search').value;
+function search(sType, sSearch, sURLType){
+	var sType = sType ? sType : _('search-opt').value;
+	var sSearch = sSearch ? sSearch : _('search').value;
+	var sURLType = sURLType ? sURLType : sType;
 
 	var onLoading = function(status){
 		_cangueClass(_('load-bar'), 'loading', !status);
@@ -51,17 +52,17 @@ function search(){
 		templateSystem.addElements(APIResults);
 	}
 
-	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sType, sSearch) != MARVEL.getCode(sType, sSearch) : true)){
+	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sURLType, sSearch) != MARVEL.getCode(sURLType, sSearch) : true)){
 		_q('#load-bar .loaded').style.width = '0%';
-		document.location.href = '#' + sType + ':' + sSearch;
+		document.location.href = '#' + sType + ':' + sURLType + ':' + sSearch;
 
 		if(!!MARVEL) MARVEL_BUFFER[MARVEL.getCode()] = MARVEL;
 
-		if(MARVEL && MARVEL_BUFFER[MARVEL.genCode(sType, sSearch)]){
-			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sType, sSearch)];
+		if(MARVEL && MARVEL_BUFFER[MARVEL.genCode(sURLType, sSearch)]){
+			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sURLType, sSearch)];
 			MARVEL.initCreated();
 		}else
-			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sSearch, onInit, onNext, onLoading);
+			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sURLType, sSearch, onInit, onNext, onLoading);
 	}
 }
 
@@ -74,7 +75,13 @@ function searchOnLoad(){
 
 	splitURL = splitURL[1].split(':');
 	var sType = splitURL[0];
-	var sSearch = splitURL[1];
+	var sURLType = splitURL[1];
+	var sSearch = splitURL[2];
+
+	if(sURLType != sType){
+		search(sType, sSearch, sURLType);
+		return false;
+	}
 	
 	_('search-opt').value = sType;
 	_('search-type-' + sType).checked = true;
@@ -259,6 +266,7 @@ function templateSystemObj(){
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{comics}}', result.comics.available);
 			temp = temp.replace('{{series}}', result.series.available);
+			temp = temp.replace(/\{\{id\}\}/g, result.id);
 			return temp;
 		},
 		// Plantilla cómic
@@ -269,6 +277,7 @@ function templateSystemObj(){
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{pages}}', result.pageCount);
 			temp = temp.replace('{{price}}', result.prices[0].price);
+			temp = temp.replace(/\{\{id\}\}/g, result.id);
 			return temp;
 		},
 		// Plantilla serie
@@ -281,6 +290,7 @@ function templateSystemObj(){
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{comics}}', result.comics.available);
 			temp = temp.replace('{{years}}', years + (years == 1 ? ' año' : ' años'));
+			temp = temp.replace(/\{\{id\}\}/g, result.id);
 			return temp;
 		}
 	}

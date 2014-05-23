@@ -4,7 +4,7 @@
  */
 
 
-function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
+function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 	var targetsPerPage = 12; // Tarjetas por página
 	var timeFromLastReturn = 300; // Tiempo pasado desde la última devolución
 
@@ -13,6 +13,7 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 	this.lastPageReturned = 0;
 	this.key = key;
 	this.sType = sType;
+	this.sURLType = sURLType;
 	this.search = search;
 	this.onLoading = onLoading;
 	this.onInit = onInit;
@@ -24,11 +25,13 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 	this.ajaxIsBusy = false;
 
 	var queries = {
-		char: "http://gateway.marvel.com:80/v1/public/characters?nameStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
-		comic: "http://gateway.marvel.com:80/v1/public/comics?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
-		serie: "http://gateway.marvel.com:80/v1/public/series?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}"
+		char:		"http://gateway.marvel.com:80/v1/public/characters?nameStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		char_comic:	"http://gateway.marvel.com:80/v1/public/characters/{{search}}/comics?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		comic:		"http://gateway.marvel.com:80/v1/public/comics?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		serie:		"http://gateway.marvel.com:80/v1/public/series?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}"
 	};
 	var filters = [
+		["id"],
 		["name"],
 		["title"],
 		["thumbnail"],
@@ -158,8 +161,9 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		this.onLoading(true);
 	}
 
+	// Genera la URL
 	this.genURL = function(limit, offset){
-		var url = queries[this.sType];
+		var url = queries[this.sURLType];
 		url = url.replace('{{search}}', this.search);
 		url = url.replace('{{limit}}', limit);
 		url = url.replace('{{offset}}', offset);
@@ -167,6 +171,7 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		return encodeURI(url);
 	}
 
+	// Filtra la información
 	var filterResults = function(APIResults, filters){
 		var newResults = [];
 
@@ -195,6 +200,7 @@ function MarvelAPI(key, sType, search, onInit, onNext, onLoading){
 		return newResults;
 	}
 
+	// Genera el código de búsqueda
 	this.getCode = function(){
 		return this.genCode(this.sType, this.search);
 	}
