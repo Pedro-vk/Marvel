@@ -122,7 +122,6 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 				var objThis = this;
 				this.lastTimeout = setTimeout(function(){objThis.nextPage()}, 100);
 			}
-
 		}
 	}
 

@@ -47,6 +47,18 @@ function search(sType, sSearch, sURLType){
 	var onNext = function(APIResults){
 		templateSystem.addElements(APIResults);
 	}
+	var onError = function(code){
+		var initial = 100;
+		var interval = 350;
+		var steps = 4;
+
+		for(var i=0; i<steps; i++){
+			if(((i%2)==0))
+				setTimeout(function(){_cangueClass(_('load-bar'), 'error');}, initial + (interval * i));
+			else
+				setTimeout(function(){_cangueClass(_('load-bar'), 'error', true);}, initial + (interval * i));
+		}
+	}
 
 	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sType, sSearch, sURLType) != MARVEL.getCode() : true)){
 		_q('#load-bar .loaded').style.width = '0%';
@@ -57,7 +69,7 @@ function search(sType, sSearch, sURLType){
 			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sType, sSearch, sURLType)];
 			MARVEL.initCreated();
 		}else
-			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sURLType, sSearch, onInit, onNext, onLoading);
+			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sURLType, sSearch, onInit, onNext, onLoading, onError);
 	}
 }
 
