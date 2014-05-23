@@ -505,6 +505,28 @@ article{
 		background: lighten(@cb-target, 16%);
 		padding: 6px 14px;
 
+		&.detail-true{
+			@dir: 1;
+			@size: 4px;
+
+			cursor: pointer;
+			box-shadow: inset (@size * 2 * @dir) 0px 0px -@size @marvel-red;
+			
+			&, .fa{
+				#STYLE>.transition(0.4s);
+			}
+
+			&:hover{
+				color: #fff;
+				//background: @marvel-red;
+				box-shadow: inset ((@ta-width + @size) * @dir) 0px 0px -@size @marvel-red;
+
+				.fa{
+					color: #fff;
+				}
+			}
+		}
+
 		.fa{
 			display: inline-block;
 			width: 22px;
@@ -515,7 +537,7 @@ article{
 			top: -1px;
 		}
 		span{
-			padding: 6px 14px;
+			padding: 6px 18px;
 			position: absolute;
 			top: 0;
 			right: 0;
