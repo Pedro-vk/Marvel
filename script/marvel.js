@@ -25,10 +25,17 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 	this.ajaxIsBusy = false;
 
 	var queries = {
-		char:		"http://gateway.marvel.com:80/v1/public/characters?nameStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
-		char_comic:	"http://gateway.marvel.com:80/v1/public/characters/{{search}}/comics?limit={{limit}}&offset={{offset}}&apikey={{key}}",
-		comic:		"http://gateway.marvel.com:80/v1/public/comics?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
-		serie:		"http://gateway.marvel.com:80/v1/public/series?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}"
+		char:			"http://gateway.marvel.com:80/v1/public/characters?nameStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		char_comic:		"http://gateway.marvel.com:80/v1/public/characters/{{search}}/comics?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		char_serie:		"http://gateway.marvel.com:80/v1/public/characters/{{search}}/series?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		char_story:		"http://gateway.marvel.com:80/v1/public/characters/{{search}}/stories?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		comic:			"http://gateway.marvel.com:80/v1/public/comics?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		comic_char:		"http://gateway.marvel.com:80/v1/public/comics/{{search}}/characters?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		serie:			"http://gateway.marvel.com:80/v1/public/series?titleStartsWith={{search}}&limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		serie_comic:	"http://gateway.marvel.com:80/v1/public/series/{{search}}/comics?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		serie_char:		"http://gateway.marvel.com:80/v1/public/series/{{search}}/characters?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		story_comic:	"http://gateway.marvel.com:80/v1/public/stories/{{search}}/comics?limit={{limit}}&offset={{offset}}&apikey={{key}}",
+		story_char:		"http://gateway.marvel.com:80/v1/public/stories/{{search}}/characters?limit={{limit}}&offset={{offset}}&apikey={{key}}"
 	};
 	var filters = [
 		["id"],
@@ -38,6 +45,9 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 		["description"],
 		["comics", "available"],
 		["series", "available"],
+		["stories", "available"],
+		["characters", "available"],
+		["creators", "available"],
 		["pageCount"],
 		["prices"],
 		["endYear"],
