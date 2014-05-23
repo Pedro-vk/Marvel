@@ -8,7 +8,7 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 	var targetsPerPage = 12; // Tarjetas por página
 	var timeFromLastReturn = 300; // Tiempo pasado desde la última devolución
 
-	this.actualPage = 1;
+	this.actualPage = 0;
 	this.totalTargets = 0;
 	this.lastPageReturned = 0;
 	this.key = key;
@@ -64,10 +64,11 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 
 	// Iniciar el objeto ya contruido
 	this.initCreated = function(){
-		this.actualPage = 1;
+		this.actualPage = 0;
 		this.ajaxIsBusy = false;
 		this.lastPageReturned = (new Date()).getTime();
 		this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
+		this.actualPage++;
 	}
 
 	// Al cargar la información inicial
@@ -76,6 +77,7 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 		this.totalTargets = APIData.total;
 		this.lastPageReturned = (new Date()).getTime();
 		this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
+		this.actualPage++;
 	}
 
 	// Paginación
@@ -212,10 +214,10 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 
 	// Genera el código de búsqueda
 	this.getCode = function(){
-		return this.genCode(this.sType, this.search);
+		return this.genCode(this.sType, this.search, this.sURLType);
 	}
-	this.genCode = function(sType, search){
-		return sType + ':' + search;
+	this.genCode = function(sType, search, sURLType){
+		return encodeURI(sType + ':' + sURLType + ':' + search);
 	}
 
 	this.init();
