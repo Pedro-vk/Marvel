@@ -4,7 +4,7 @@
  */
 
 
-function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
+function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onError){
 	var targetsPerPage = 12; // Tarjetas por página
 	var timeFromLastReturn = 300; // Tiempo pasado desde la última devolución
 
@@ -15,9 +15,10 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 	this.sType = sType;
 	this.sURLType = sURLType;
 	this.search = search;
-	this.onLoading = onLoading;
-	this.onInit = onInit;
-	this.onNext = onNext;
+	this.onInit = onInit ? onInit : function(){};
+	this.onNext = onNext ? onNext : function(){};
+	this.onLoading = onLoading ? onLoading : function(){};
+	this.onError = onError ? onError : function(){};
 	this.lastTimeout;
 
 	this.results = [];
@@ -59,11 +60,15 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 		this.AJAX(this.genURL(targetsPerPage * 2, 0),function(ajax, objThis){
 			var data = JSON.parse(ajax.responseText);
 			objThis.onGetInitialData(data.data);
-		});
+		}, this.onError);
 	}
 
 	// Iniciar el objeto ya contruido
 	this.initCreated = function(){
+		if(this.actualPage == 0){
+			this.init();
+			return false;
+		}
 		this.actualPage = 0;
 		this.ajaxIsBusy = false;
 		this.lastPageReturned = (new Date()).getTime();
@@ -85,7 +90,7 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 		this.AJAX(this.genURL(limit, offset),function(ajax, objThis){
 			var data = JSON.parse(ajax.responseText);
 			objThis.onGetData(data.data);
-		});
+		}, this.onError);
 	}
 
 	// Al cargar información (de paginación)
@@ -138,8 +143,8 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 	}
 
 	this.AJAX = function(URL, onReady, onError){
-		var onReady = onReady ? onReady : function(){};
-		var onError = onError ? onError : function(){};
+		var onReady = onReady;
+		var onError = onError;
 		var ajax = new XMLHttpRequest();
 		
 		// Captamos el objeto XMLHttpRequest()
@@ -161,7 +166,7 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading){
 				if(ajax.status == 200) {
 					onReady(ajax, objThis);
 				}else{
-					onError();	
+					onError(ajax.status);	
 				}
 			}
 		}
