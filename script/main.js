@@ -38,6 +38,10 @@ function searchOnEnter(e){
 	}
 }
 function search(sType, sSearch, sURLType){
+	if(!!sType&&!!sSearch&&!!sURLType)
+		_('search').value = '';
+	isWrote(_('search'));
+
 	var sType = sType ? sType : _('search-opt').value;
 	var sSearch = sSearch ? sSearch : _('search').value;
 	var sURLType = sURLType ? sURLType : sType;
@@ -228,6 +232,7 @@ function templateSystemObj(){
 			case "char": template += _('template-char').innerHTML.replace(/(\n|\t)/g, ''); break;
 			case "comic": template += _('template-comic').innerHTML.replace(/(\n|\t)/g, ''); break;
 			case "serie": template += _('template-serie').innerHTML.replace(/(\n|\t)/g, ''); break;
+			case "story": template += _('template-story').innerHTML.replace(/(\n|\t)/g, ''); break;
 		}
 
 		crossScroll.addTargets(APIResults.length);
@@ -264,8 +269,12 @@ function templateSystemObj(){
 			temp = temp.replace('{{name}}', result.name);
 			temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
 			temp = temp.replace('{{description}}', _noNull(result.description));
-			temp = temp.replace('{{comics}}', result.comics.available);
 			temp = temp.replace('{{series}}', result.series.available);
+			temp = temp.replace('{{comics}}', result.comics.available);
+			temp = temp.replace('{{stories}}', result.stories.available);
+			temp = temp.replace(/\{\{haveseries\}\}/g, !!result.series.available);
+			temp = temp.replace(/\{\{havecomics\}\}/g, !!result.comics.available);
+			temp = temp.replace(/\{\{havestories\}\}/g, !!result.stories.available);
 			temp = temp.replace(/\{\{id\}\}/g, result.id);
 			return temp;
 		},
@@ -275,8 +284,10 @@ function templateSystemObj(){
 			temp = temp.replace('{{title}}', result.title);
 			temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
 			temp = temp.replace('{{description}}', _noNull(result.description));
+			temp = temp.replace('{{chars}}', result.characters.available);
 			temp = temp.replace('{{pages}}', result.pageCount);
 			temp = temp.replace('{{price}}', result.prices[0].price);
+			temp = temp.replace(/\{\{havechars\}\}/g, !!result.characters.available);
 			temp = temp.replace(/\{\{id\}\}/g, result.id);
 			return temp;
 		},
@@ -289,7 +300,24 @@ function templateSystemObj(){
 			temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{comics}}', result.comics.available);
+			temp = temp.replace('{{chars}}', result.characters.available);
+			temp = temp.replace(/\{\{havecomics\}\}/g, !!result.comics.available);
+			temp = temp.replace(/\{\{havechars\}\}/g, !!result.characters.available);
 			temp = temp.replace('{{years}}', years + (years == 1 ? ' año' : ' años'));
+			temp = temp.replace(/\{\{id\}\}/g, result.id);
+			return temp;
+		},
+		// Plantilla historia
+		story: function (temp, result, index){
+			temp = temp.replace('{{index}}', index);
+			temp = temp.replace('{{title}}', result.title);
+			temp = temp.replace('{{thumbnail}}', "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/landscape_xlarge.jpg");
+			temp = temp.replace('{{description}}', _noNull(result.description));
+			temp = temp.replace('{{comics}}', result.comics.available);
+			temp = temp.replace('{{chars}}', result.characters.available);
+			temp = temp.replace('{{crea}}', result.creators.available);
+			temp = temp.replace(/\{\{havecomics\}\}/g, !!result.comics.available);
+			temp = temp.replace(/\{\{havechars\}\}/g, !!result.characters.available);
 			temp = temp.replace(/\{\{id\}\}/g, result.id);
 			return temp;
 		}
@@ -363,3 +391,26 @@ _addEvent('keyup', function(){
 function LOAD(){
 	searchOnLoad();
 }
+
+// Comprobación de cambio de hash
+function checkHashChangue(onChangue){
+	this.hash = document.location.hash;
+	this.onChangue = onChangue;
+
+	this.check = function(){
+		if(this.hash != document.location.hash){
+			this.hash = document.location.hash;
+			this.onChangue();
+		}
+		var objThis = this;
+		setTimeout(function(){
+			objThis.check();
+		}, 150);
+	}
+
+	this.check();
+}
+
+new checkHashChangue(function(){
+	searchOnLoad();
+});
