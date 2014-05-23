@@ -25,7 +25,7 @@ var MARVEL_KEY = "f526f137d0d0411937e54a018676190d";
 
 var MARVEL = null;
 
-var MARVEL_BUFFER = [];
+var MARVEL_BUFFER = {};
 
 
 
@@ -34,18 +34,10 @@ var MARVEL_BUFFER = [];
 // Search
 function searchOnEnter(e){
 	if(e.keyCode == 13){
-		search();
+		searchInput();
 	}
 }
 function search(sType, sSearch, sURLType){
-	if(!!sType&&!!sSearch&&!!sURLType)
-		_('search').value = '';
-	isWrote(_('search'));
-
-	var sType = sType ? sType : _('search-opt').value;
-	var sSearch = sSearch ? sSearch : _('search').value;
-	var sURLType = sURLType ? sURLType : sType;
-
 	var onLoading = function(status){
 		_cangueClass(_('load-bar'), 'loading', !status);
 	}
@@ -56,23 +48,41 @@ function search(sType, sSearch, sURLType){
 		templateSystem.addElements(APIResults);
 	}
 
-	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sURLType, sSearch) != MARVEL.getCode(sURLType, sSearch) : true)){
+	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sType, sSearch, sURLType) != MARVEL.getCode() : true)){
 		_q('#load-bar .loaded').style.width = '0%';
-		document.location.href = '#' + sType + ':' + sURLType + ':' + sSearch;
 
 		if(!!MARVEL) MARVEL_BUFFER[MARVEL.getCode()] = MARVEL;
 
-		if(MARVEL && MARVEL_BUFFER[MARVEL.genCode(sURLType, sSearch)]){
-			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sURLType, sSearch)];
+		if(MARVEL && MARVEL_BUFFER[MARVEL.genCode(sType, sSearch, sURLType)]){
+			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sType, sSearch, sURLType)];
 			MARVEL.initCreated();
 		}else
 			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sURLType, sSearch, onInit, onNext, onLoading);
 	}
 }
 
+// Search desde input
+function searchInput(){
+	var sType = _('search-opt').value;
+	var sSearch = _('search').value;
+	var sURLType = sType;
+
+	document.location.href = encodeURI('#' + sType + ':' + sURLType + ':' + sSearch);
+	searchFromURL();
+}
+
+// Search desde tarjeta
+function searchTarget(sType, sSearch, sURLType){
+	_('search').value = '';
+	isWrote(_('search'));
+
+	document.location.href = encodeURI('#' + sType + ':' + sURLType + ':' + sSearch);
+	searchFromURL();
+}
+
 // Search desde URL
-function searchOnLoad(){
-	var splitURL = document.location.href.split('#');
+function searchFromURL(){
+	var splitURL = decodeURI(document.location.href).split('#');
 
 	if(splitURL.length <= 1)
 		return false;
@@ -93,7 +103,7 @@ function searchOnLoad(){
 	_('search').value = sSearch;
 	isWrote(_('search'));
 
-	search();
+	search(sType, sSearch, sURLType);
 }
 
 
@@ -389,7 +399,7 @@ _addEvent('keyup', function(){
 
 // Page loaded
 function LOAD(){
-	searchOnLoad();
+	searchFromURL();
 }
 
 // Comprobación de cambio de hash
@@ -412,5 +422,5 @@ function checkHashChangue(onChangue){
 }
 
 new checkHashChangue(function(){
-	searchOnLoad();
+	searchFromURL();
 });
