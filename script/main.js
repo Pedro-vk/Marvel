@@ -48,12 +48,12 @@ function search(sType, sSearch, sURLType){
 		templateSystem.addElements(APIResults);
 	}
 	var onError = function(code){
-		var initial = 100;
-		var interval = 350;
+		var initial = 200;
+		var interval = 300;
 		var steps = 4;
 
 		for(var i=0; i<steps; i++){
-			if(((i%2)==0))
+			if((i%2)==0)
 				setTimeout(function(){_cangueClass(_('load-bar'), 'error');}, initial + (interval * i));
 			else
 				setTimeout(function(){_cangueClass(_('load-bar'), 'error', true);}, initial + (interval * i));
@@ -63,7 +63,10 @@ function search(sType, sSearch, sURLType){
 	if(sSearch != '' && (MARVEL ? MARVEL.genCode(sType, sSearch, sURLType) != MARVEL.getCode() : true)){
 		_q('#load-bar .loaded').style.width = '0%';
 
-		if(!!MARVEL) MARVEL_BUFFER[MARVEL.getCode()] = MARVEL;
+		if(!!MARVEL){
+			MARVEL.terminate();
+			MARVEL_BUFFER[MARVEL.getCode()] = MARVEL;
+		}
 
 		if(MARVEL && MARVEL_BUFFER[MARVEL.genCode(sType, sSearch, sURLType)]){
 			MARVEL = MARVEL_BUFFER[MARVEL.genCode(sType, sSearch, sURLType)];
@@ -78,6 +81,8 @@ function searchInput(){
 	var sType = _('search-opt').value;
 	var sSearch = _('search').value;
 	var sURLType = sType;
+
+	if(sSearch == '') return false;
 
 	document.location.href = encodeURI('#' + sType + ':' + sURLType + ':' + sSearch);
 	searchFromURL();

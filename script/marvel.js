@@ -8,6 +8,8 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 	var targetsPerPage = 12; // Tarjetas por página
 	var timeFromLastReturn = 300; // Tiempo pasado desde la última devolución
 
+	this.active = true;
+
 	this.actualPage = 0;
 	this.totalTargets = 0;
 	this.lastPageReturned = 0;
@@ -65,14 +67,15 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 
 	// Iniciar el objeto ya contruido
 	this.initCreated = function(){
+		this.active = true;
 		if(this.actualPage == 0){
 			this.init();
 			return false;
 		}
+		this.onLoading(this.ajaxIsBusy);
 		this.actualPage = 0;
-		this.ajaxIsBusy = false;
 		this.lastPageReturned = (new Date()).getTime();
-		this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
+		if(this.active) this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
 		this.actualPage++;
 	}
 
@@ -81,8 +84,14 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 		this.storeResults(APIData);
 		this.totalTargets = APIData.total;
 		this.lastPageReturned = (new Date()).getTime();
-		this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
+		if(this.active) this.onInit(this.sType, this.getResult(targetsPerPage, 0), this.totalTargets);
 		this.actualPage++;
+	}
+
+	// Detiene la ejecución de la búsqueda
+	this.terminate = function(){
+		this.active = false;
+		this.onLoading(false);
 	}
 
 	// Paginación
@@ -113,7 +122,7 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 					!this.ajaxIsBusy)
 						this.getData(targetsPerPage * 2, nextOffset)
 
-				this.onNext(this.getResult(targetsPerPage, actualOffset));
+				if(this.active) this.onNext(this.getResult(targetsPerPage, actualOffset));
 				this.actualPage++;
 				this.lastPageReturned = (new Date()).getTime();
 
@@ -161,7 +170,7 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 			if(ajax.readyState == 4) {
 				// Loaded
 				objThis.ajaxIsBusy = false;
-				objThis.onLoading(false);
+				if(objThis.active) objThis.onLoading(false);
 				if(ajax.status == 200) {
 					onReady(ajax, objThis);
 				}else{
