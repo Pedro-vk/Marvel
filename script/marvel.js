@@ -68,10 +68,6 @@ function MarvelAPI(key, sType, sURLType, search, onInit, onNext, onLoading, onEr
 	// Iniciar el objeto ya contruido
 	this.initCreated = function(){
 		this.active = true;
-		if(this.actualPage == 0){
-			this.init();
-			return false;
-		}
 		this.onLoading(this.ajaxIsBusy);
 		this.actualPage = 0;
 		this.lastPageReturned = (new Date()).getTime();
