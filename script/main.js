@@ -325,7 +325,10 @@ function templateSystemObj(){
 		char: function(temp, result, index){
 			temp = temp.replace('{{index}}', index);
 			temp = temp.replace('{{name}}', result.name);
-			temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
+			if(result.thumbnail != null)
+				temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
+			else
+				temp = temp.replace('{{thumbnail}}', 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/landscape_xlarge.jpg');
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{series}}', result.series.available);
 			temp = temp.replace('{{comics}}', result.comics.available);
@@ -340,7 +343,10 @@ function templateSystemObj(){
 		comic: function(temp, result, index){
 			temp = temp.replace('{{index}}', index);
 			temp = temp.replace('{{title}}', result.title);
-			temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
+			if(result.thumbnail != null)
+				temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
+			else
+				temp = temp.replace('{{thumbnail}}', 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/landscape_xlarge.jpg');
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{chars}}', result.characters.available);
 			temp = temp.replace('{{pages}}', result.pageCount);
@@ -355,7 +361,10 @@ function templateSystemObj(){
 
 			temp = temp.replace('{{index}}', index);
 			temp = temp.replace('{{title}}', result.title);
-			temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
+			if(result.thumbnail != null)
+				temp = temp.replace('{{thumbnail}}', result.thumbnail.path + "/landscape_xlarge." + result.thumbnail.extension);
+			else
+				temp = temp.replace('{{thumbnail}}', 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/landscape_xlarge.jpg');
 			temp = temp.replace('{{description}}', _noNull(result.description));
 			temp = temp.replace('{{comics}}', result.comics.available);
 			temp = temp.replace('{{chars}}', result.characters.available);
