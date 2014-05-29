@@ -74,6 +74,9 @@ function search(sType, sSearch, sURLType){
 			MARVEL.initCreated();
 		}else
 			MARVEL = new MarvelAPI(MARVEL_KEY, sType, sURLType, sSearch, onInit, onNext, onLoading, onError);
+
+		crossScroll.hideControls();
+		setTimeout(function(){crossScroll.hideControls();}, 100);
 	}
 }
 
@@ -240,6 +243,16 @@ function crossScrollObj(onFinish, isFinish){
 		_cangueClass(document.body, 'touch', !touch);
 	}
 
+	// Establecer si tiene entrada táctil
+	this.showControls = function(show){
+		if(this.isTouch)
+			_switchClass(document.body, 'hide-controls');
+	}
+	this.hideControls = function(){
+		if(this.isTouch)
+			_cangueClass(document.body, 'hide-controls');
+	}
+
 	// Ajustar número de líneas
 	function contentLines(){
 		var lines = Math.floor((_get.windowHeight() - CONTENT_EXTRA_HEIGHT) / TARGET_HEIGHT);
@@ -398,7 +411,6 @@ var templateSystem = new templateSystemObj();
 // Saber si está focus o no el search
 function searchFocus(focus){
 	_cangueClass(document.body, 'searching', !focus);
-	if(!focus) _('search').blur();
 }
 
 
@@ -423,7 +435,7 @@ _addEvent('resize', function(){
 });
 
 // Click
-_addEvent('click', function(){
+_addEvent('click', function(e){
 	showOption.hide();
 });
 
