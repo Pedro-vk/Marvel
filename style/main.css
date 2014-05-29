@@ -43,3 +43,5 @@ article .details{position:relative;border-top:1px solid #e6e6e6;background:#f5f5
 article .details.detail-true:hover{color:#fff;box-shadow:inset 274px 0 0 -4px #09f}article .details.detail-true:hover .fa{color:#fff}
 article .details .fa{display:inline-block;width:22px;text-align:center;margin-right:10px;color:#444;position:relative;top:-1px}
 article .details span{padding:6px 18px;position:absolute;top:0;right:0}
+body.touch #contentScroll{display:none}
+body.touch #content{position:absolute;z-index:1;left:0 !important;marrgin:0}

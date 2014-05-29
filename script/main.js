@@ -9,6 +9,7 @@ function _cangueClass(o,className,remove){remove?o.classList.remove(className):o
 function _noNull(text){return text==null?'':text;}
 var _get = {
 	scroll: function(){ return document.documentElement.scrollTop || document.body.scrollTop;},
+	scrollY: function(){ return document.documentElement.scrollLeft || document.body.scrollLeft;},
 	windowHeight: function(){ return window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;},
 	windowWidth: function(){ return window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;}
 };
@@ -172,7 +173,6 @@ function changueOption(o, fromSearch){
 
 
 // Movimientos del contenido
-
 function crossScrollObj(onFinish, isFinish){
 	window.scrollTo(0,0);
 	this.size = 0;
@@ -180,6 +180,7 @@ function crossScrollObj(onFinish, isFinish){
 	this.totalTargets = 0;
 	this.onFinish = onFinish;
 	this.isFinish = isFinish;
+	this.isTouch = false;
 
 	// Añadir nuevas tarjetas
 	this.addTargets = function(n){
@@ -207,6 +208,10 @@ function crossScrollObj(onFinish, isFinish){
 
 	// Mover el contenedor de las tarjetas
 	this.moveTargetsContainer = function(x, y){
+		if(this.isTouch){
+			this.loadInTouch(x, y);
+			return false;
+		}
 		var scrollHeight = this.size - _get.windowHeight();
 		var scroll = _get.scroll() / scrollHeight;
 		var availableX = this.size - _get.windowWidth();
@@ -217,10 +222,22 @@ function crossScrollObj(onFinish, isFinish){
 		if(_get.scroll() > (scrollHeight - this.isFinish)) onFinish();
 	}
 
+	// Cargar tarjetas con el scroll horizontal
+	this.loadInTouch = function(x, y){
+		var scrollWidth = this.size - _get.windowWidth();
+		if(_get.scrollY() > (scrollWidth - this.isFinish)) onFinish();
+	}
+
 	// Muestra información relativa al número de tarjetas
 	this.showInfo = function(){
 		var loaded = this.targets / this.totalTargets;
 		_q('#load-bar .loaded').style.width = (loaded * 100) + '%';
+	}
+
+	// Establecer si tiene entrada táctil
+	this.isTouchScreen = function(touch){
+		this.isTouch = touch;
+		_cangueClass(document.body, 'touch', !touch);
 	}
 
 	// Ajustar número de líneas
@@ -247,6 +264,7 @@ function templateSystemObj(){
 		_('content').innerHTML = '';
 		crossScroll =  new crossScrollObj(function(){MARVEL.nextPage()}, 500);
 		crossScroll.totalTargets = total;
+		crossScroll.isTouchScreen("ontouchstart" in document.documentElement);
 		this.addElements(APIResults);
 	}
 
