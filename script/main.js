@@ -28,6 +28,7 @@ var MARVEL = null;
 
 var MARVEL_BUFFER = {};
 
+var TOUCH = !!('ontouchstart' in document.documentElement);
 
 
 
@@ -277,7 +278,7 @@ function templateSystemObj(){
 		_('content').innerHTML = '';
 		crossScroll =  new crossScrollObj(function(){MARVEL.nextPage()}, 500);
 		crossScroll.totalTargets = total;
-		crossScroll.isTouchScreen("ontouchstart" in document.documentElement);
+		crossScroll.isTouchScreen(TOUCH);
 		this.addElements(APIResults);
 	}
 
