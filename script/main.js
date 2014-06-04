@@ -28,7 +28,7 @@ var MARVEL = null;
 
 var MARVEL_BUFFER = {};
 
-var TOUCH = !!('ontouchstart' in document.documentElement);
+var TOUCH = null;
 
 
 
@@ -242,6 +242,7 @@ function crossScrollObj(onFinish, isFinish){
 	this.isTouchScreen = function(touch){
 		this.isTouch = touch;
 		_cangueClass(document.body, 'touch', !touch);
+		if(!touch) _cangueClass(document.body, 'hide-controls', true);
 	}
 
 	// Establecer si tiene entrada táctil
@@ -459,6 +460,7 @@ function LOAD(){
 	searchFromURL();
 }
 
+
 // Comprobación de cambio de hash
 function checkHashChangue(onChangue){
 	this.hash = document.location.hash;
@@ -481,3 +483,29 @@ function checkHashChangue(onChangue){
 new checkHashChangue(function(){
 	searchFromURL();
 });
+
+
+// Comprobar TOUCH con media queries
+function checkMedia(onChangue, matchMedias){
+	this.onChangue = onChangue;
+	this.matchMedias = matchMedias;
+
+	this.changueMedia = function(){
+		onChangue(this.matchMedias);
+	}
+	this.initListeners = function(){
+		var objThis = this;
+		for(var media in this.matchMedias)
+			this.matchMedias[media].addListener(function(){objThis.changueMedia()});
+		this.changueMedia();
+	}
+	this.initListeners();
+}
+
+new checkMedia(function(matchMedias){
+	TOUCH = matchMedias[0].matches || matchMedias[1].matches;
+	if(document.body) crossScroll.isTouchScreen(TOUCH);
+},[
+	matchMedia('(max-width: 600px)'),
+	matchMedia('(max-height: 720px)')
+]);
