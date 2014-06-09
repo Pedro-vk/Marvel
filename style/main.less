@@ -528,10 +528,36 @@ article{
 		height: @ta-info-height;
 		position: relative;
 		overflow: hidden;
+
+		@media screen and (max-height: 570px) {
+			height: @ta-info-height * 0.7;
+
+			.name{
+				white-space: nowrap;
+				overflow: hidden;
+				text-overflow: ellipsis;
+			}
+		}
+
+		@media screen and (max-height: 500px) {
+			height: @ta-info-height * 0.5;
+		}
+		@media screen and (max-height: 500px) {
+			height: @ta-info-height * 0.5;
+		}
+		@media screen and (max-height: 460px) {
+			height: 40px;
+
+			.description:before,
+			.description::before{
+				display: none;
+				height: 0px;
+			}
+		}
 		
 		.name{
 			background: darken(#fff, 6%);
-			padding: 8px 12px;
+			padding: 8px 16px;
 			font-size: 18px;
 			border-bottom: 1px solid lighten(@cb-target, 10%);
 			text-align: center;
