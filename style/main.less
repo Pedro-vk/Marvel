@@ -525,7 +525,9 @@ article{
 		background: url('http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available/landscape_xlarge.jpg');
 	}
 	.info{
-		min-height: @ta-info-height;
+		height: @ta-info-height;
+		position: relative;
+		overflow: hidden;
 		
 		.name{
 			background: darken(#fff, 6%);
@@ -542,8 +544,21 @@ article{
 			padding: 12px 14px;
 			word-wrap: break-word;
 
+			&:before,
+			&::before{
+				content: '';
+				position: absolute;
+				bottom: 0;
+				right: 0;
+				left: 0;
+				width: 100%;
+				height: 30px;
+
+				#STYLE>.gradiant-li (180deg, rgba(255,255,255,0), #fff);
+			}
+
 			*{
-				display: inline;
+				display: inline-block;
 			}
 		}
 	}

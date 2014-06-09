@@ -396,22 +396,15 @@ function templateSystemObj(){
 
 	function collapseDescription(){
 		var elements = _query('#content article.trim');
-
+	
 		for(var elem in elements){
 			if(isNaN(elem)) continue;
-
+	
 			elements[elem].classList.remove('trim');
-
-			var info = elements[elem].querySelector('.info');
+	
 			var desc = elements[elem].querySelector('.description');
-
-			if(desc.textContent.length > 400){
-				desc.textContent = desc.textContent.substr(0, 400);
-			}
-			while(info.offsetHeight > INFO_MAX_HEIGHT){
-				var step = (info.offsetHeight-INFO_MAX_HEIGHT) > 34 ? 30 : 6;
-				desc.textContent = desc.textContent.substr(0, desc.textContent.length - step) + '...';
-			}
+	
+			desc.innerHTML = desc.textContent.replace(/\n/g, '<br>');
 		}
 	}
 }
